@@ -13,17 +13,20 @@
 		}
 	</style>
 	<script>
-		var key = '403d5274ed5eb1c0131d74485aaa30dd';
+		var key = 'd21e5d3b7fc02304be47844136741e55';
 		var base_url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + key + "&format=json&nojsoncallback=1";
 
 		$(document).ready(function () {
-
+            //function that takes response from ajax and builds the url of img
 			var displayPhotos = function (photos) {
+                //checks if response is greater than 0
 				if(photos.length > 0){
 					$('#photo-list').html('');
+                //no photos matched search
 				}else{
 					$('#photo-list').html('No Photos Found');
 				}
+                //loops through the responses and builds <img> tags for them then appends them to the body in the specified div
 				for (var index in photos) {
 					var photoObj = photos[index];
 					var url = 'https://farm' + photoObj.farm + '.staticflickr.com/' + photoObj.server + '/' + photoObj.id + '_' + photoObj.secret + '.jpg'
@@ -31,22 +34,24 @@
 					$('#photo-list').append(img);
 				}
 			}
-
+            //click handler to trigger the ajax call
 			$('body').on('click', '#search-btn', function () {
 				var val = $('#search').val();
 				var search_url = base_url + "&text=" + val;
 				var photos = [];
-
+                //searching status message
 				$('#photo-list').html('Searching');
-
+                //ajax call
 				$.ajax({
 					url: search_url,
 					dateType: 'json',
 					crossDomain: true,
+                    //add photo data into photo array then pass it to displayPhotos function
 					success: function (response) {
 						photos = response.photos.photo;
 						displayPhotos(photos);
 					},
+                    //print error message if there was an error
 					error: function (response) {
 						console.error(response);
 					}
